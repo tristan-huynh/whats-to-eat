@@ -50,7 +50,32 @@ class Menu(commands.Cog):
     #         return "Lunch"
     #     elif period_type == "Dinner":
     #         return "Dinner"
+    @discord.slash_command(name="menu", description="Get today's menu for a specific period")
+    @discord.option("period", description="The period you want the menu for", choices=["Breakfast", "Lunch", "Dinner"])
+    async def menu(self, ctx: discord.ApplicationContext, period: str):
+        response = urlopen(Request(API_URL, headers=HDR))
+        data_json = json.loads(response.read())
 
+        desired_stations = {"Homestyle", "500 Degrees", "Flame", "Delicious Without"}
+
+        embed = discord.Embed(title="Today's Menu", color=discord.Color.blue())
+
+        for location in data_json['locations']:
+            embed.add_field(name="Location", value=location['name'], inline=False)
+            for period_data in location['periods']:
+                if period_data['name'].lower() == period.lower():
+                    embed.add_field(name="Period", value=period_data['name'], inline=False)
+                    for station in period_data['stations']:
+                        if station['name'] in desired_stations:
+                            station_info = f"**Station Name:** {station['name']}\n"
+                            for item in station['items']:
+                                station_info += f"**Item Name:** {item['name']}\n"
+                                station_info += f"Calories: {item['calories']}\n"
+                                station_info += f"Portion: {item['portion']}\n\n"
+                            embed.add_field(name=station['name'], value=station_info, inline=False)
+
+        await ctx.respond(embed=embed)
+    
 
     # @discord.slash_command(name="menu", description="Get today's menu for a specific period")
     # @discord.option("period", description="The period you want the menu for", autocomplete=get_period)
