@@ -1,14 +1,14 @@
-import discord
+import discord, psutil, time, dotenv, os
 from discord.ext import commands
-import psutil
-import time
+from dotenv import load_dotenv
 
+load_dotenv
 
 class Status(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.start_time = time.time()
-        self.bot.version = "1.0.0"
+        self.bot.version = os.getenv("version")
 
     @discord.slash_command(description="Show the bot's status")
     async def status(self, ctx: discord.ApplicationContext):
@@ -27,7 +27,8 @@ class Status(commands.Cog):
         embed.add_field(name="Client Latency", value=f"{round(self.bot.latency * 1000)}ms", inline=True)
         
         embed.set_thumbnail(url=self.bot.user.avatar.url)
-        embed.set_footer(icon_url=self.bot.user.avatar.url, text=f"{self.bot.user.name} v{self.bot.version}")
+        embed.set_footer(icon_url=ctx.bot.user.avatar.url if ctx.bot.user.avatar else None, 
+                         text=f"{self.bot.user.name} • v{self.bot.version}")
 
         await ctx.respond(embed=embed)
 
