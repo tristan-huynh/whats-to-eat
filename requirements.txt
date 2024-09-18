@@ -1,1 +1,4 @@
-# To ensure app dependencies are ported from your virtual environment/host machine into your container, run 'pip freeze > requirements.txt' in the terminal to overwrite this file
+aiohttp==3.10.5
+psutil==6.0.0
+python-dotenv==1.0.1
+py-cord==2.6.1
