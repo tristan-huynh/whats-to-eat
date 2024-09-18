@@ -29,7 +29,7 @@ class Menu(commands.Cog):
         excluded_locations = {"Brkfst & Co", "Tu Taco"}
 
         embed = discord.Embed(title=f"{period}", color=discord.Color.blue())
-
+        # forfiet wads one, include mcnair 500 degrees
         for location in data_json['locations']:
             if location['name'] not in excluded_locations:
                 embed.add_field(name="Location", value=location['name'], inline=False)
@@ -37,6 +37,9 @@ class Menu(commands.Cog):
                     if period_data['name'].lower() == period.lower():
                         for station in period_data['stations']:
                             if station['name'] in desired_stations:
+                                # Exclude "500 Degrees" from appearing under Wadsworth
+                                if location['name'] == "Food Hall at Wadsworth" and station['name'] == "500 Degrees":
+                                    continue
                                 station_info = ""
                                 for item in station['items']:
                                     station_info += f"{item['name']}\n"
