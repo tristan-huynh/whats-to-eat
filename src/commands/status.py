@@ -18,13 +18,18 @@ class Status(commands.Cog):
         uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime))
         server_count = len(self.bot.guilds)
 
+        days, remainder = divmod(uptime, 86400)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        uptime_str = f"{int(days)}d, {int(hours)}h, {int(minutes)}m, {int(seconds)}s"
+
         embed = discord.Embed(title="Status", color=discord.Color.blue())
         embed.add_field(name="CPU Usage", value=f"{cpu_usage}%", inline=True)
         embed.add_field(name="Memory Usage", value=f"{memory_info.percent}%", inline=True)
         embed.add_field(name="Uptime", value=uptime_str, inline=True)
         embed.add_field(name="Servers", value=server_count, inline=True)
-        embed.add_field(name="Websocket Latency", value=f"0 ms", inline=True)
-        embed.add_field(name="Client Latency", value=f"{round(self.bot.latency * 1000)}ms", inline=True)
+        embed.add_field(name="Client Latency", value=f"{round(self.bot.latency)}ms", inline=True)
+        embed.add_field(name="Version", value=f"v{self.bot.version}", inline=True)
         
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         embed.set_footer(icon_url=ctx.bot.user.avatar.url if ctx.bot.user.avatar else None, 
