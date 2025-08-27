@@ -8,7 +8,6 @@ class Status(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.start_time = time.time()
-        self.bot.version = os.getenv("version")
 
     @discord.slash_command(description="Show the bot's status")
     async def status(self, ctx: discord.ApplicationContext):
@@ -23,18 +22,16 @@ class Status(commands.Cog):
         minutes, seconds = divmod(remainder, 60)
         uptime_str = f"{int(days)}d, {int(hours)}h, {int(minutes)}m, {int(seconds)}s"
 
-        embed = discord.Embed(title="Status", color=discord.Color.blue())
+        embed = discord.Embed(title="System Status", color=self.bot.embed_color)
         embed.add_field(name="CPU Usage", value=f"{cpu_usage}%", inline=True)
         embed.add_field(name="Memory Usage", value=f"{memory_info.percent}%", inline=True)
         embed.add_field(name="Uptime", value=uptime_str, inline=True)
         embed.add_field(name="Servers", value=server_count, inline=True)
-        embed.add_field(name="Client Latency", value=f"{round(self.bot.latency)}ms", inline=True)
-        embed.add_field(name="Version", value=f"v{self.bot.version}", inline=True)
-        
+        embed.add_field(name="Client Latency", value=f"{round(self.bot.latency)}ms", inline=True)        
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         embed.set_footer(icon_url=ctx.bot.user.avatar.url if ctx.bot.user.avatar else None, 
                          text=f"{self.bot.user.name} • v{self.bot.version}")
-
+        embed.timestamp = discord.utils.utcnow()
         await ctx.respond(embed=embed)
 
 def setup(bot):
