@@ -162,6 +162,5 @@ cython_debug/
 #.idea/
 
 
-# Added by cargo
-/target
+todays_menu.json
 

@@ -1,4 +1,5 @@
 import discord, psutil, time, dotenv, os
+from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -9,8 +10,8 @@ class Status(commands.Cog):
         self.bot = bot
         self.start_time = time.time()
 
-    @discord.slash_command(description="Show the bot's status")
-    async def status(self, ctx: discord.ApplicationContext):
+    @app_commands.command(description="Show the bot's status")
+    async def status(self, interaction: discord.Interaction):
         cpu_usage = psutil.cpu_percent(interval=1)
         memory_info = psutil.virtual_memory()
         uptime = time.time() - self.start_time
@@ -29,10 +30,10 @@ class Status(commands.Cog):
         embed.add_field(name="Servers", value=server_count, inline=True)
         embed.add_field(name="Client Latency", value=f"{round(self.bot.latency)}ms", inline=True)        
         embed.set_thumbnail(url=self.bot.user.avatar.url)
-        embed.set_footer(icon_url=ctx.bot.user.avatar.url if ctx.bot.user.avatar else None, 
+        embed.set_footer(icon_url=interaction.client.user.avatar.url if interaction.client.user.avatar else None, 
                          text=f"{self.bot.user.name} • v{self.bot.version}")
         embed.timestamp = discord.utils.utcnow()
-        await ctx.respond(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
-def setup(bot):
-    bot.add_cog(Status(bot))
+async def setup(bot):
+    await bot.add_cog(Status(bot))

@@ -50,11 +50,18 @@ async def on_ready():
     # Start the cache scheduler
     cache_manager.start_scheduler()
     logging.info("Menu cache system initialized")
+    
+    # Sync command tree for discord.py
+    try:
+        synced = await bot.tree.sync()
+        logging.info(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+        logging.error(f"Failed to sync commands: {e}")
 
 async def load_extensions():
     for filename in os.listdir('./src/commands/'):
         if filename.endswith('.py'):
-            bot.load_extension(f'src.commands.{filename[:-3]}')
+            await bot.load_extension(f'src.commands.{filename[:-3]}')
             logging.info(f'Loaded {filename[:-3]}')
 
 

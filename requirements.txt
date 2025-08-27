@@ -1,5 +1,5 @@
 aiohttp==3.10.5
 psutil==6.0.0
 python-dotenv==1.0.1
-py-cord==2.6.1
+discord.py==2.5.2
 schedule==1.2.2

@@ -1,6 +1,6 @@
-# Project Title
+# whats-to-eat
 
-Simple overview of use/purpose.
+Michigan Tech Menu Discord Bot
 
 ## Description
 

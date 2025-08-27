@@ -61,8 +61,10 @@ class MenuCacheManager:
         schedule.every().day.at("07:00").do(self.fetch_and_cache_menu)
         schedule.every().day.at("11:00").do(self.fetch_and_cache_menu) 
         schedule.every().day.at("15:00").do(self.fetch_and_cache_menu)
+        schedule.every().day.at("17:00").do(self.fetch_and_cache_menu)
+        schedule.every().day.at("21:00").do(self.fetch_and_cache_menu)
 
-        logging.info("Cache scheduler configured for 00:00, 07:00, 11:00, and 15:00 daily")
+        logging.info("Cache scheduler configured for 00:00, 07:00, 11:00, 15:00, 17:00, and 21:00 daily")
 
     def _run_scheduler(self):
         # Set to run in a thread
@@ -107,7 +109,9 @@ class MenuCacheManager:
                     "00:00 daily",
                     "07:00 daily",
                     "11:00 daily", 
-                    "15:00 daily"
+                    "15:00 daily",
+                    "17:00 daily",
+                    "21:00 daily"
                 ]
             }
         else:

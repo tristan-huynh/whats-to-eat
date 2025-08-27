@@ -1,6 +1,6 @@
 import discord, json, os, subprocess, logging #, aiohttp
+from discord import app_commands
 from discord.ext import commands
-from discord import Option
 from urllib.request import urlopen, Request
 
 CACHE_FILE = "src/cache/todays_menu.json"
@@ -54,9 +54,14 @@ class Menu(commands.Cog):
         
         return True
 
-    @discord.slash_command(name="menu", description="Get today's menu for a specific period")
-    @discord.option("period", description="The period you want the menu for", choices=["Breakfast", "Lunch", "Dinner"])
-    async def menu(self, ctx: discord.ApplicationContext, period: str):
+    @app_commands.command(name="menu", description="Get today's menu for a specific period")
+    @app_commands.describe(period="The period you want the menu for")
+    @app_commands.choices(period=[
+        app_commands.Choice(name="Breakfast", value="Breakfast"),
+        app_commands.Choice(name="Lunch", value="Lunch"),
+        app_commands.Choice(name="Dinner", value="Dinner")
+    ])
+    async def menu(self, interaction: discord.Interaction, period: str):
         try:
             # Use cached data instead of fetching from API
             data_json = self.bot.cache_manager.load_cached_menu()
@@ -68,7 +73,7 @@ class Menu(commands.Cog):
                 logging.warning("Using fallback API call due to cache failure")
                 
         except Exception as e:
-            await ctx.respond(f"Unknown error: {e}. Please try again later.", ephemeral=True)
+            await interaction.response.send_message(f"Unknown error: {e}. Please try again later.", ephemeral=True)
             logging.error(f"Error fetching menu data: {e}")
             return
 
@@ -115,14 +120,14 @@ class Menu(commands.Cog):
 
         embed.set_footer(
             text=f"{self.bot.user.name} • v{self.bot.version}",
-            icon_url=ctx.bot.user.avatar.url if ctx.bot.user.avatar else None
+            icon_url=interaction.client.user.avatar.url if interaction.client.user.avatar else None
         )
         embed.timestamp = discord.utils.utcnow()
-        await ctx.respond(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
-    @discord.slash_command(name="refresh_cache", description="Manually refresh the menu cache")
-    async def refresh_cache(self, ctx: discord.ApplicationContext):
-        await ctx.defer()  # This operation might take a few seconds trigger manual cache refresh
+    @app_commands.command(name="refresh_cache", description="Manually refresh the menu cache")
+    async def refresh_cache(self, interaction: discord.Interaction):
+        await interaction.response.defer()  # This operation might take a few seconds trigger manual cache refresh
         
         try:
             self.bot.cache_manager.fetch_and_cache_menu()
@@ -137,9 +142,9 @@ class Menu(commands.Cog):
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(
                 text=f"{self.bot.user.name} • v{self.bot.version}",
-                icon_url=ctx.bot.user.avatar.url if ctx.bot.user.avatar else None
+                icon_url=interaction.client.user.avatar.url if interaction.client.user.avatar else None
             )
-            await ctx.followup.send(embed=embed)
+            await interaction.followup.send(embed=embed)
             
         except Exception as e:
             embed = discord.Embed(
@@ -147,8 +152,8 @@ class Menu(commands.Cog):
                 description=f"Error: {str(e)}",
                 color=self.bot.embed_color
             )
-            await ctx.followup.send(embed=embed)
+            await interaction.followup.send(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Menu(bot))
+async def setup(bot):
+    await bot.add_cog(Menu(bot))
