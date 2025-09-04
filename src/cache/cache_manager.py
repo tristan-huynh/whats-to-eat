@@ -56,15 +56,13 @@ class MenuCacheManager:
             return None
 
     def setup_schedule(self):
-        # Schedule cache updates at 12 AM, 7 AM, 11 AM, and 3 PM
-        schedule.every().day.at("00:00").do(self.fetch_and_cache_menu)
+        # Schedule cache updates at 7 AM, 11 AM, 3 PM, and 9 PM
         schedule.every().day.at("07:00").do(self.fetch_and_cache_menu)
         schedule.every().day.at("11:00").do(self.fetch_and_cache_menu) 
         schedule.every().day.at("15:00").do(self.fetch_and_cache_menu)
-        schedule.every().day.at("17:00").do(self.fetch_and_cache_menu)
         schedule.every().day.at("21:00").do(self.fetch_and_cache_menu)
 
-        logging.info("Cache scheduler configured for 00:00, 07:00, 11:00, 15:00, 17:00, and 21:00 daily")
+        logging.info("Cache scheduler configured for 07:00, 11:00, 15:00, and 21:00 daily")
 
     def _run_scheduler(self):
         # Set to run in a thread
