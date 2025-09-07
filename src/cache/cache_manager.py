@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 from urllib.request import urlopen, Request
 from threading import Thread
+import random
 
 class MenuCacheManager:
     def __init__(self):
@@ -37,7 +38,7 @@ class MenuCacheManager:
                 json.dump(data, f, indent=4)
             
             logging.info(f"Menu cache updated successfully at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-            
+            logging.info(f"Cache file size: {os.path.getsize(self.cache_file)} bytes")
         except Exception as e:
             logging.error(f"Failed to update menu cache: {e}")
 
@@ -57,10 +58,12 @@ class MenuCacheManager:
 
     def setup_schedule(self):
         # Schedule cache updates at 7 AM, 11 AM, 3 PM, and 9 PM
-        schedule.every().day.at("07:00").do(self.fetch_and_cache_menu)
-        schedule.every().day.at("11:00").do(self.fetch_and_cache_menu) 
-        schedule.every().day.at("15:00").do(self.fetch_and_cache_menu)
-        schedule.every().day.at("21:00").do(self.fetch_and_cache_menu)
+        # random delay to avoid hitting API at exact same time
+        random_delay = random.randint(1, 9)
+        schedule.every().day.at(f"07:{random_delay:02d}").do(self.fetch_and_cache_menu)
+        schedule.every().day.at(f"11:{random_delay:02d}").do(self.fetch_and_cache_menu)
+        schedule.every().day.at(f"15:{random_delay:02d}").do(self.fetch_and_cache_menu)
+        schedule.every().day.at(f"21:{random_delay:02d}").do(self.fetch_and_cache_menu)
 
         logging.info("Cache scheduler configured for 07:00, 11:00, 15:00, and 21:00 daily")
 
@@ -104,11 +107,9 @@ class MenuCacheManager:
                 "last_modified": last_modified,
                 "size_bytes": file_size,
                 "next_scheduled_runs": [
-                    "00:00 daily",
                     "07:00 daily",
                     "11:00 daily", 
                     "15:00 daily",
-                    "17:00 daily",
                     "21:00 daily"
                 ]
             }
