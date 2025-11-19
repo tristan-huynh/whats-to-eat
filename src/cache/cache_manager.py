@@ -12,7 +12,7 @@ import random
 class MenuCacheManager:
     def __init__(self):
         self.cache_file = "src/cache/todays_menu.json"
-        self.api_url = "https://api.dineoncampus.com/v1/sites/todays_menu?site_id=64872d0f351d53058416c3d5"
+        self.api_url = "https://apiv4.dineoncampus.com/sites/todays_menu?siteId=64872d0f351d53058416c3d5"
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8',
