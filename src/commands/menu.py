@@ -19,7 +19,7 @@ class Menu(commands.Cog):
         self.bot = bot
 
     # Configuration constants
-    DESIRED_STATIONS = {"Homestyle", "Delicious Without", "Flame", "Taste of Home", "The Diner", "The Kitchen"}
+    DESIRED_STATIONS = {"Homestyle", "Delicious Without", "The Diner", "Taste of Home", "The Diner", "The Kitchen"}
     EXCLUDED_LOCATIONS = {"Brkfst & Co", "Tu Taco", "Par and Grill"}
     
     # Special rules for specific location/station combinations
